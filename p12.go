@@ -10,8 +10,7 @@ func div_count (n int64) int64 {
     var i int64
 
     for i = 2; i < border; i++ {
-        mod := math.Mod(float64(n), float64(i))
-        if mod == 0 {
+        if n % i == 0 {
             result = result + 2
         }
     }
