@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+  "fmt"
+  "bufio"
+  "io"
+  //"strconv"
+  "os"
+)
 
 var pyramid [][]int = [][]int{
   []int{75,},
@@ -29,7 +35,56 @@ func max2(a, b int) int {
   return result
 }
 
+func read_line(r io.Reader, count int) ([]int, error) {
+  var result []int = make([]int, count)
+  var e error = nil
+  for i := 0; i < count; i++ {
+    _, err := fmt.Fscan(r, &result[i])
+
+    if err != nil {
+      e = err
+      break
+    }
+  }
+
+  return result, e
+}
+
+func read_data(filename string) [][]int {
+  var result [][]int
+
+  // Open file
+  file, oerr := os.Open(filename)
+  if oerr != nil {
+    panic(fmt.Errorf("The file %s does not exist!", filename))
+  }
+
+  // Close file at the end
+  defer func() {
+		if err := file.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+  reader := bufio.NewReader(file)
+  counter := 1
+  for {
+      arr, err := read_line(reader, counter)
+
+      if err != nil {
+        break
+      }
+
+      result = append(result, arr)
+
+      counter += 1
+  }
+
+  return result
+}
+
 func main () {
+  pyramid := read_data("./67data.txt")
   for i := len(pyramid) - 2; i >= 0; i-- {
     for j := 0; j < i + 1; j++ {
       pyramid[i][j] += max2(pyramid[i + 1][j], pyramid[i + 1][j + 1])
